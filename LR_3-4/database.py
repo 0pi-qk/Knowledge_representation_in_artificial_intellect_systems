@@ -12,17 +12,36 @@ def create_connection(db_name, db_user, db_password, db_host, db_port):
             host=db_host,
             port=db_port,
         )
-        print("Подключение к PostgreSQL БД выполнено успешно")
-    except OperationalError as e:
-        print(f"The error connection '{e}' occurred")
+    except:
+        connection = psycopg2.connect(
+            database='postgres',
+            user=db_user,
+            password=db_password,
+            host=db_host,
+            port=db_port,
+        )
+
+        connection.autocommit = True
+        cursor = connection.cursor()
+        cursor.execute("""CREATE DATABASE {}""".format(db_name))
+        connection.close()
+
+        connection = psycopg2.connect(
+            database=db_name,
+            user=db_user,
+            password=db_password,
+            host=db_host,
+            port=db_port,
+        )
+
     return connection
+
 
 def execute_query(connection, query):
     connection.commit()
     cursor = connection.cursor()
     try:
         cursor.execute(query)
-        print("Запрос выполнен")
     except OperationalError as e:
         print(f"The error '{e}' occurred")
 
@@ -71,4 +90,3 @@ fk_word_id INTEGER REFERENCES wordList (rowid),
 fk_link_id INTEGER REFERENCES linkBtwURL (rowid)
 );
 """
-

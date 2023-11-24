@@ -13,12 +13,11 @@ nameList = ['Александр', 'Михаил', 'Максим', 'Лев', 'М�
             'Мария', 'Анна', 'Алиса', 'Виктория', 'Ева', 'Полина', 'Александра', 'Василиса', 'Варвара']
 class Crawler:
     def __init__(self, dbFileName):
-        print('Конструктор')
         self.dbFileName = dbFileName
         self.connection = create_connection(self.dbFileName, "postgres", "22343056", "localhost", "5432")
 
     def __del__(self):
-        print('Деструктор')
+        self.connection.close()
 
     def initDB(self):
         execute_query(self.connection, create_wordList_table)
@@ -37,7 +36,7 @@ class Crawler:
         urlId: int = self.getEntryId('urllist', 'url', url)  # add URL in db
 
         for i in range(len(words)):
-            word: str = words[i]
+            word: str = words[i].lower()
 
             if re.fullmatch('[.,₽&•$><*\'`?!+()\/=;:@~#{}\[\]\-]*', word) or word in nameList:
                 pass
@@ -160,7 +159,8 @@ class Crawler:
 
                 for link in soup.findAll('a'):
 
-                    if link.get('href') is None or link.get('href') == '' or 'javascript' in link.get('href'):
+                    if link.get('href') is None or link.get('href') == '' or 'javascript' in link.get('href')\
+                            or "'" in link.get('href') or '"' in link.get('href'):
                         continue
 
                     domen = 'https://' + urlparse(url).netloc
