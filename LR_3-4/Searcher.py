@@ -1,7 +1,7 @@
 from Crawler import *
 
 
-class Seacher:
+class Searcher:
     def __init__(self, dbFileName):
         self.dbFileName = dbFileName
         self.connection = create_connection(self.dbFileName, "postgres", "22343056", "localhost", "5432")
@@ -160,7 +160,7 @@ class Seacher:
         for (_, _, _, _, url) in rankedScoresList[0:3]:
             html_doc = requests.get(url).text
             soup = bs4.BeautifulSoup(html_doc, "html.parser")
-            text += Crawler.getTextOnly(_ ,soup) + "\nНОВАЯ СТРАНИЦА\n"
+            text += Crawler(self.dbFileName).getTextOnly(soup) + "\nНОВАЯ СТРАНИЦА\n"
 
         ql = queryString.split(' ')
         for i in range(0, len(ql)):
@@ -206,7 +206,7 @@ class Seacher:
             for id in idList:
                 pr = 0
 
-                cursor.execute("""SELECT DISTINCT fk_fromurl_id FROM linkbtwurl WHERE fk_tourl_id = {}""".format(idd[0]))
+                cursor.execute("""SELECT DISTINCT fk_fromurl_id FROM linkbtwurl WHERE fk_tourl_id = {}""".format(id[0]))
                 idListFrom = cursor.fetchall()
 
                 for idd in idListFrom:
@@ -224,8 +224,6 @@ class Seacher:
                 self.connection.commit()
 
     def pagerankScore(self, rows):
-        self.calculatePageRank()
-
         pagerankDict = dict()
 
         for row in rows:

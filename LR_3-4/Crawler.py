@@ -197,7 +197,11 @@ class Crawler:
             urlList = list(random.sample(list(newPageSet), int(len(newPageSet) * 0.05 + 1)))
             print(f"Страниц - {len(newPageSet)}. Из них 5% - {int(len(newPageSet) * 0.05 + 1)}")
 
-        self.stat(table)
+        #self.stat(table)
+
+        print('calculatePageRank:')
+        from Searcher import Searcher
+        Searcher(self.dbFileName).calculatePageRank()
 
     def getEntryId(self, tableName, fieldName, value):
 

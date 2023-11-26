@@ -20,7 +20,7 @@ def menu():
             main.crawl(URL, depth)
         elif n == 2:
             DB_name = input('\nEnter database mame - ')
-            mySearcher = Seacher(DB_name)
+            mySearcher = Searcher(DB_name)
 
             mySearchQuery = input('\nEnter search query - ')
             mySearcher.getSortedList(mySearchQuery)
